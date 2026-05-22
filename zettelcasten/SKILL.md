@@ -1,0 +1,152 @@
+---
+name: zettelcasten
+description: "メモ間のリンクを積み重ねて知識を有機的に育てたいときに使う思考・知識管理システム。使い方：(1) 読書・論文・記事から学んだことを、後で別のアイデアと結びつけたいとき (2) 「あのとき考えたこと」を忘れないよう蓄積し、後から検索・再利用したいとき (3) アイデア同士の思わぬ関連性を発見して、新しい考察や創作につなげたいとき (4) ブログ・論文・本などの長いアウトプットを、メモの組み合わせから生み出したいとき"
+metadata:
+---
+
+# Zettelcasten
+
+メモ間のリンクを積み重ねて知識を有機的に育てるための思考・知識管理システム。
+
+## ディレクトリ
+
+```
+~/.openclaw/workspace/zettelkasten/
+├── Literature/   -- 文献メモ
+└── Permanent/    -- 永続メモ
+```
+
+## ファイル命名規則
+
+```
+YYYY-MM-DD HH-mm.md
+例: 2026-03-15 17-45.md
+```
+
+```bash
+# 現在時刻でファイル名を生成する
+date +"%Y-%m-%d %H-%M"
+```
+
+## ファイル構造（YAML frontmatter）
+
+```markdown
+---
+title: メモのタイトル
+source: book | web | ai | conversation
+source_title: ソースのタイトル（文献メモのみ）
+source_author: 著者名（文献メモのみ）
+source_url: URL（文献メモのみ）
+ai_generated: true          # AIが作成したメモの場合のみ追加
+ai_model: anthropic/claude-sonnet-4-6  # 使用モデル（ai_generatedがtrueの場合）
+---
+
+本文
+```
+
+**ルール：** AIがメモを作成する場合は必ず `ai_generated: true` と `ai_model: <使用モデル名>` をfrontmatterに追加すること。人間が書いたメモにはこれらのフィールドを付けない。
+
+## 特殊なMarkdown記法（Obsidian互換）
+
+- `#タグ` — タグを定義する
+- `[[ファイル名]]` — 他のメモへのリンク
+- `[[ファイル名|表示名]]` — 表示名付きリンク
+
+## ⚠️ リンクは積極的に活用すること
+
+メモ間のリンクがZettelkastenの核心。以下を必ず守ること：
+
+- **他のメモに言及するときは必ず `[[ファイル名]]` でリンクを貼る**（「関連メモ」欄だけでなく、本文中でも）
+- 新しいメモを作るとき、既存メモとの関連を必ず探してリンクを貼る
+- 関連メモが複数あれば全部リンクする
+
+### リンクを探す手順（メモ作成時）
+```bash
+# 関連キーワードで既存メモを検索
+rg "キーワード" ~/.openclaw/workspace/zettelkasten/
+```
+
+→ ヒットしたメモのファイル名を `[[ファイル名]]` 形式で本文中に埋め込む。
+
+## メモの種類と書き方
+
+### 文献メモ (Literature Notes)
+`Literature/` に保存。
+
+**定義：** Webの情報を読み、内容の要約・考えたこと・気になったアイデアのメモ。
+
+- 読んだ内容を**自分の言葉で**書き直す（コピペ禁止）
+- 長さはごく短く、内容は厳選する
+- 書誌情報（タイトル・著者・URL等）を必ず記載
+- 1文献から複数のメモを作っていい（アイデアごとに1枚）
+- **Yutoくんの感想・考察がある場合は、同じ文献メモ内に `## Yutoくんの考察` セクションを設けて引用で記録する**（別ファイルに分けない）
+
+### 永続メモ (Permanent Notes)
+`Permanent/` に保存。
+
+**定義：** アイデアを他人に共有できるレベルで書き直したメモ。
+
+- **自己完結した文章**で書く（文脈を忘れても理解できるように）
+- 1アイデア = 1メモ
+- 関連する文献メモ・永続メモにリンクを貼る
+- 取り組んでいる問題や関心事からタグをつける
+
+## 操作手順
+
+### 新規メモを作成する
+```bash
+# ディレクトリ作成（初回のみ）
+mkdir -p ~/.openclaw/workspace/zettelkasten/Literature
+mkdir -p ~/.openclaw/workspace/zettelkasten/Permanent
+
+# ファイル名生成
+FILENAME=$(date +"%Y-%m-%d %H-%M")
+
+# 文献メモを作成する例
+cat > ~/.openclaw/workspace/zettelkasten/Literature/"${FILENAME}.md" << 'EOF'
+---
+title: タイトル
+source: web
+source_url: https://example.com
+---
+
+内容
+EOF
+```
+
+### 既存メモを検索する
+```bash
+# タイトルで検索
+rg "キーワード" ~/.openclaw/workspace/zettelkasten/
+
+# タグで検索
+rg "#タグ名" ~/.openclaw/workspace/zettelkasten/
+
+# リンクを辿る（深さ1）
+rg "\[\[ファイル名" ~/.openclaw/workspace/zettelkasten/
+```
+
+### メモを読む
+```bash
+# 一覧表示
+ls ~/.openclaw/workspace/zettelkasten/Permanent/
+
+# 内容確認
+cat "~/.openclaw/workspace/zettelkasten/Permanent/2026-03-15 17-45.md"
+```
+
+**⚠️ メモを参照する際は、本文中の `[[リンク]]` を抽出し、リンク先のメモも必ず読むこと（深さ1まで）。**
+
+```bash
+# リンク先のファイルを特定する例
+rg "\[\[.*\]\]" "対象ファイル.md" -o | sed 's/\[\[//;s/\]\].*//'
+# → 得られたファイル名で workspace/zettelkasten/ 以下を検索して読む
+```
+
+## 向かない用途
+
+- タスク管理やスケジュール管理
+- 単なるログや日記の保存
+- 資料をそのまま保管するアーカイブ
+
+要するに「情報を貯めるため」ではなく「考えを育てるため」のシステム。
