@@ -1,19 +1,19 @@
 ---
-name: zettelcasten
+name: zettelkasten (zk)
 description: "メモ間のリンクを積み重ねて知識を有機的に育てたいときに使う思考・知識管理システム。使い方：(1) 読書・論文・記事から学んだことを、後で別のアイデアと結びつけたいとき (2) 「あのとき考えたこと」を忘れないよう蓄積し、後から検索・再利用したいとき (3) アイデア同士の思わぬ関連性を発見して、新しい考察や創作につなげたいとき (4) ブログ・論文・本などの長いアウトプットを、メモの組み合わせから生み出したいとき"
 metadata:
 ---
 
-# Zettelcasten
+# Zettelkasten (Zk)
 
 メモ間のリンクを積み重ねて知識を有機的に育てるための思考・知識管理システム。
 
 ## ディレクトリ
 
 ```
-~/.openclaw/workspace/zettelkasten/
-├── Literature/   -- 文献メモ
-└── Permanent/    -- 永続メモ
+${ZK_DIR}
+├── Literature/   -- 文献メモ（LN）
+└── Permanent/    -- 永続メモ（PN）
 ```
 
 ## ファイル命名規則
@@ -33,11 +33,11 @@ date +"%Y-%m-%d %H-%M"
 ```markdown
 ---
 title: メモのタイトル
-source: book | web | ai | conversation
-source_title: ソースのタイトル（文献メモのみ）
-source_author: 著者名（文献メモのみ）
-source_url: URL（文献メモのみ）
-ai_generated: true          # AIが作成したメモの場合のみ追加
+source: book | web # optional, for LN
+source_title: ソースのタイトル # optional, for LN
+source_author: 著者名 # optional, for LN
+source_url: URL # optional, for LN
+ai_generated: true          # AIが作成したPNの場合のみ追加
 ai_model: anthropic/claude-sonnet-4-6  # 使用モデル（ai_generatedがtrueの場合）
 ---
 
@@ -63,7 +63,7 @@ ai_model: anthropic/claude-sonnet-4-6  # 使用モデル（ai_generatedがtrue�
 ### リンクを探す手順（メモ作成時）
 ```bash
 # 関連キーワードで既存メモを検索
-rg "キーワード" ~/.openclaw/workspace/zettelkasten/
+rg "キーワード" ${ZK_DIR}
 ```
 
 → ヒットしたメモのファイル名を `[[ファイル名]]` 形式で本文中に埋め込む。
@@ -96,14 +96,14 @@ rg "キーワード" ~/.openclaw/workspace/zettelkasten/
 ### 新規メモを作成する
 ```bash
 # ディレクトリ作成（初回のみ）
-mkdir -p ~/.openclaw/workspace/zettelkasten/Literature
-mkdir -p ~/.openclaw/workspace/zettelkasten/Permanent
+mkdir -p ${ZK_DIR}
+mkdir -p ${ZK_DIR}
 
 # ファイル名生成
 FILENAME=$(date +"%Y-%m-%d %H-%M")
 
 # 文献メモを作成する例
-cat > ~/.openclaw/workspace/zettelkasten/Literature/"${FILENAME}.md" << 'EOF'
+cat > ${ZK_DIR}/Literature/"${FILENAME}.md" << 'EOF'
 ---
 title: タイトル
 source: web
@@ -117,22 +117,22 @@ EOF
 ### 既存メモを検索する
 ```bash
 # タイトルで検索
-rg "キーワード" ~/.openclaw/workspace/zettelkasten/
+rg "キーワード" ${ZK_DIR}
 
 # タグで検索
-rg "#タグ名" ~/.openclaw/workspace/zettelkasten/
+rg "#タグ名" ${ZK_DIR}
 
 # リンクを辿る（深さ1）
-rg "\[\[ファイル名" ~/.openclaw/workspace/zettelkasten/
+rg "\[\[ファイル名" ${ZK_DIR}
 ```
 
 ### メモを読む
 ```bash
 # 一覧表示
-ls ~/.openclaw/workspace/zettelkasten/Permanent/
+ls ${ZK_DIR}
 
 # 内容確認
-cat "~/.openclaw/workspace/zettelkasten/Permanent/2026-03-15 17-45.md"
+cat "${ZK_DIR}/Permanent/2026-03-15 17-45.md"
 ```
 
 **⚠️ メモを参照する際は、本文中の `[[リンク]]` を抽出し、リンク先のメモも必ず読むこと（深さ1まで）。**
