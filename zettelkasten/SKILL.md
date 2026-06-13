@@ -12,8 +12,10 @@ metadata:
 
 ```
 ${ZK_DIR}
-├── Literature/   -- 文献メモ（LN）
-└── Permanent/    -- 永続メモ（PN）
+├── Literature/   -- 文献メモ（Literature Notes, LN）
+│   └── 2025-08-22 12-34.md -- 1ノートが1ファイルに対応、ファイル名は作成日時
+└── Permanent/    -- 永続メモ（Permanent Notes, PN）
+    └── 2025-08-22 12-34.md
 ```
 
 ## ファイル命名規則
@@ -33,7 +35,7 @@ date +"%Y-%m-%d %H-%M"
 ```markdown
 ---
 title: メモのタイトル
-source: book | web # optional, for LN
+source_type: book | web # optional, for LN
 source_title: ソースのタイトル # optional, for LN
 source_author: 著者名 # optional, for LN
 source_url: URL # optional, for LN
@@ -46,11 +48,13 @@ ai_model: anthropic/claude-sonnet-4-6  # 使用モデル（ai_generatedがtrue�
 
 **ルール：** AIがメモを作成する場合は必ず `ai_generated: true` と `ai_model: <使用モデル名>` をfrontmatterに追加すること。人間が書いたメモにはこれらのフィールドを付けない。
 
-## 特殊なMarkdown記法（Obsidian互換）
+## 特殊なMarkdown記法
 
-- `#タグ` — タグを定義する
-- `[[ファイル名]]` — 他のメモへのリンク
-- `[[ファイル名|表示名]]` — 表示名付きリンク
+Markdown記法はObsidianに従う。
+
+- `#タグ` でタグを定義できる。
+- `[[ファイル名]]` でリンクを作成できる。 `[[ファイル名|表示名]]` で `[表示名](ファイル名)` と同等になる。
+- `![[画像パス]]` で画像を埋め込める。
 
 ## ⚠️ リンクは積極的に活用すること
 
@@ -70,7 +74,7 @@ rg "キーワード" ${ZK_DIR}
 
 ## メモの種類と書き方
 
-### 文献メモ (Literature Notes)
+### 文献メモ (Literature Notes, LN)
 `Literature/` に保存。
 
 **定義：** Webの情報を読み、内容の要約・考えたこと・気になったアイデアのメモ。
@@ -79,9 +83,9 @@ rg "キーワード" ${ZK_DIR}
 - 長さはごく短く、内容は厳選する
 - 書誌情報（タイトル・著者・URL等）を必ず記載
 - 1文献から複数のメモを作っていい（アイデアごとに1枚）
-- **Yutoくんの感想・考察がある場合は、同じ文献メモ内に `## Yutoくんの考察` セクションを設けて引用で記録する**（別ファイルに分けない）
+- **ユーザーの感想・考察がある場合は、同じ文献メモ内に `## 感想・考察` セクションを設けて引用で記録する**（別ファイルに分けない）
 
-### 永続メモ (Permanent Notes)
+### 永続メモ (Permanent Notes, PN)
 `Permanent/` に保存。
 
 **定義：** アイデアを他人に共有できるレベルで書き直したメモ。
@@ -127,13 +131,6 @@ rg "\[\[ファイル名" ${ZK_DIR}
 ```
 
 ### メモを読む
-```bash
-# 一覧表示
-ls ${ZK_DIR}
-
-# 内容確認
-cat "${ZK_DIR}/Permanent/2026-03-15 17-45.md"
-```
 
 **⚠️ メモを参照する際は、本文中の `[[リンク]]` を抽出し、リンク先のメモも必ず読むこと（深さ1まで）。**
 
