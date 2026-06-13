@@ -1,5 +1,6 @@
 ---
-name: zettelkasten (zk)
+name: zettelkasten
+license: MIT
 description: "メモ間のリンクを積み重ねて知識を有機的に育てたいときに使う思考・知識管理システム。使い方：(1) 読書・論文・記事から学んだことを、後で別のアイデアと結びつけたいとき (2) 「あのとき考えたこと」を忘れないよう蓄積し、後から検索・再利用したいとき (3) アイデア同士の思わぬ関連性を発見して、新しい考察や創作につなげたいとき (4) ブログ・論文・本などの長いアウトプットを、メモの組み合わせから生み出したいとき"
 metadata:
 ---
@@ -39,8 +40,8 @@ source_type: book | web # optional, for LN
 source_title: ソースのタイトル # optional, for LN
 source_author: 著者名 # optional, for LN
 source_url: URL # optional, for LN
-ai_generated: true          # AIが作成したPNの場合のみ追加
-ai_model: anthropic/claude-sonnet-4-6  # 使用モデル（ai_generatedがtrueの場合）
+ai_generated: true # AIが作成したPNの場合のみ追加
+ai_model: anthropic/claude-sonnet-4-6 # 使用モデル（ai_generatedがtrueの場合）
 ---
 
 本文
@@ -65,6 +66,7 @@ Markdown記法はObsidianに従う。
 - 関連メモが複数あれば全部リンクする
 
 ### リンクを探す手順（メモ作成時）
+
 ```bash
 # 関連キーワードで既存メモを検索
 rg "キーワード" ${ZK_DIR}
@@ -75,6 +77,7 @@ rg "キーワード" ${ZK_DIR}
 ## メモの種類と書き方
 
 ### 文献メモ (Literature Notes, LN)
+
 `Literature/` に保存。
 
 **定義：** Webの情報を読み、内容の要約・考えたこと・気になったアイデアのメモ。
@@ -86,6 +89,7 @@ rg "キーワード" ${ZK_DIR}
 - **ユーザーの感想・考察がある場合は、同じ文献メモ内に `## 感想・考察` セクションを設けて引用で記録する**（別ファイルに分けない）
 
 ### 永続メモ (Permanent Notes, PN)
+
 `Permanent/` に保存。
 
 **定義：** アイデアを他人に共有できるレベルで書き直したメモ。
@@ -98,6 +102,7 @@ rg "キーワード" ${ZK_DIR}
 ## 操作手順
 
 ### 新規メモを作成する
+
 ```bash
 # ディレクトリ作成（初回のみ）
 mkdir -p ${ZK_DIR}
@@ -119,6 +124,7 @@ EOF
 ```
 
 ### 既存メモを検索する
+
 ```bash
 # タイトルで検索
 rg "キーワード" ${ZK_DIR}
