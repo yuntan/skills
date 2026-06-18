@@ -14,28 +14,29 @@ metadata:
 ```
 ${ZK_DIR}
 ├── Literature/   -- 文献メモ（Literature Notes, LN）
-│   └── 2025-08-22 12-34.md -- 1ノートが1ファイルに対応、ファイル名は作成日時
+│   └── 2025-08-22 12.34.56.md -- 1ノートが1ファイルに対応、ファイル名は作成日時
 └── Permanent/    -- 永続メモ（Permanent Notes, PN）
-    └── 2025-08-22 12-34.md
+    └── 2025-08-22 12.34.56.md
 ```
 
 ## ファイル命名規則
 
 ```
-YYYY-MM-DD HH-mm.md
-例: 2026-03-15 17-45.md
+YYYY-MM-DD HH.mm.ss.md
+例: 2026-03-15 17.45.23.md
 ```
 
 ```bash
 # 現在時刻でファイル名を生成する
-date +"%Y-%m-%d %H-%M"
+date +"%Y-%m-%d %H.%M.%S"
 ```
 
 ## ファイル構造（YAML frontmatter）
 
 ```markdown
 ---
-title: メモのタイトル
+type: Literature | Permanent # required
+title: メモのタイトル # required
 source_type: book | web # optional, for LN
 source_title: ソースのタイトル # optional, for LN
 source_author: 著者名 # optional, for LN
@@ -54,8 +55,8 @@ ai_model: anthropic/claude-sonnet-4-6 # 使用モデル（ai_generatedがtrueの
 Markdown記法はObsidianに従う。
 
 - `#タグ` でタグを定義できる。
-- `[[ファイル名]]` でリンクを作成できる。 `[[ファイル名|表示名]]` で `[表示名](ファイル名)` と同等になる。
-- `![[画像パス]]` で画像を埋め込める。
+- `[[ファイル名]]`, `[[ファイル名|表示名]]` でリンクを作成できる。
+- `![[画像ファイル名]]` で画像を埋め込める。
 
 ## ⚠️ リンクは積極的に活用すること
 
@@ -104,16 +105,13 @@ rg "キーワード" ${ZK_DIR}
 ### 新規メモを作成する
 
 ```bash
-# ディレクトリ作成（初回のみ）
-mkdir -p ${ZK_DIR}
-mkdir -p ${ZK_DIR}
-
 # ファイル名生成
-FILENAME=$(date +"%Y-%m-%d %H-%M")
+FILENAME=$(date +"%Y-%m-%d %H.%M.%S")
 
 # 文献メモを作成する例
 cat > ${ZK_DIR}/Literature/"${FILENAME}.md" << 'EOF'
 ---
+type: Literature
 title: タイトル
 source: web
 source_url: https://example.com
