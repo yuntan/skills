@@ -12,7 +12,7 @@ Injects a reminder to capture useful knowledge in the Zettelkasten during agent 
 
 - Fires on `agent:bootstrap` (before workspace files are injected)
 - Adds a reminder block to save research, ideas, and distilled learnings to the Zettelkasten
-- Prompts the agent to create linked notes in `zettelkasten/Literature/` or `zettelkasten/Permanent/` when appropriate
+- Prompts the agent to create linked notes in `${ZK_DIR}/Literature/` or `${ZK_DIR}/Permanent/` when appropriate
 
 ## Configuration
 
