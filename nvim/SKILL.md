@@ -6,87 +6,95 @@ license: MIT
 
 # Neovim連携
 
-## 引数
+ターンごとのバッファ確認（UserPromptSubmit）と、編集後のファイル表示更新（PostToolUse on Write|Edit）は
+`~/.claude/settings.json` のフックが自動で行う。**このスキルは接続の設定・切り替えのみを担当する。**
 
-- $socket: ユーザーが `nvim --listen $socket` で指定したソケット
+## セッションごとの接続状態
 
-## 挙動
+接続先ソケットは **セッション単位** の状態ファイルに保存する。
 
-### スキル読み込み時
-
-以下のコマンドを実行し、接続確認を行う。
-
-```sh
-nvim --server $socket --remote-send ':echo "Connected to Claude Code!"<CR>' 2>/dev/null && echo "NVIM_CONNECTED" || echo "NVIM_DISCONNECTED"
+```
+~/.claude/nvim-sockets/<session_id>
 ```
 
-- NVIM_CONNECTED: neovim 連携ワークフロー有効
-- NVIM_DISCONNECTED: 通常ワークフローで継続（neovim 操作をスキップ）
+- スキル側（connect/disconnect）は自分の session_id を環境変数 `$CLAUDE_CODE_SESSION_ID` から得る。
+- フック側は stdin で渡る `session_id` を使い、同じファイルを読む。
+- ファイルが無ければフックは何もしない（＝そのセッションは切断状態）。
 
-その後、nvim 関連のコマンドが失敗するまで、NVIM_CONNECTED を維持する。
+これにより、複数の neovim を立ち上げて別々の Claude Code セッションに接続しても衝突しない。
 
-## ユーザーとのやり取り
+## サブコマンド
 
-現在開いているファイルを暗黙的に取得する。
+スキルの引数で動作を分岐する。
 
-```sh
-nvim --server $socket --remote-expr "expand('%:p')"
-nvim --server $socket --remote-expr "line('.')"
-```
+### setup
 
-現在選択されている行を暗黙的に取得する。まず visual mode 中かどうかを確認する。
+neovim 連携用のフックを `~/.claude/settings.json` の `hooks` に**マージ**する（既存フックは保持）。
+対象は `UserPromptSubmit`（バッファ状態の注入）と `PostToolUse`（matcher `Write|Edit`、編集ファイルの表示更新）。
+いずれのフックも stdin の `session_id` から `~/.claude/nvim-sockets/<session_id>` を読み、ファイルが無ければ no-op になる。
 
-```sh
-nvim --server $socket --remote-expr "mode()"
-```
+導入するフック定義は同梱の **`hooks.json`** にある（setup 実行時のみ読む）。
+これを `~/.claude/settings.json` の `.hooks` にマージする。`update-config` スキルを使うのが安全。
 
-`v` / `V` / `\x16`(Ctrl-V) で始まる場合: visual mode 中。
+### connect $socket
 
-```sh
-nvim --server $socket --remote-expr "line('.')"
-nvim --server $socket --remote-expr "line('v')"
-```
+ユーザーが `nvim --listen $socket` で起動したソケットに、このセッションを接続する。
 
-## コーディングワークフロー
+1. 到達確認:
 
-### Read
+   ```sh
+   nvim --server $socket --remote-expr "1" >/dev/null 2>&1 && echo OK || echo NG
+   ```
 
-ユーザーにコードの内容を示す場合、以下のコマンドを実行する
+2. OK の場合のみ、このセッションの状態ファイルに保存する。以降フックがこのソケットを使う。
 
-```sh
-nvim --server $socket --remote $filepath:$line
-```
+   ```sh
+   mkdir -p ~/.claude/nvim-sockets
+   printf '%s' "$socket" > ~/.claude/nvim-sockets/$CLAUDE_CODE_SESSION_ID
+   ```
 
-### Write, Edit, MultiEdit
+3. 接続できたことを Neovim 側にも知らせる。
 
-Edit, MultiEdit の場合は、ファイルの変更前に、必ず以下のコマンドを実行してファイルを開く
+   ```sh
+   nvim --server $socket --remote-send ':echo "Connected to Claude Code!"<CR>'
+   ```
 
-```sh
-nvim --server $socket --remote +$line $filepath
-```
+   NG の場合は接続せず、その旨をユーザーに伝える。
 
-Edit, MultiEdit が完了したら、必ず以下のコマンドで vim の表示を更新する
+### disconnect
 
-```sh
-nvim --server $socket --remote-send ':checktime<CR>'
-```
-
-Write の場合は、ファイルの作成後に必ず以下のコマンドを実行し、ファイルを開く
+このセッションの状態ファイルを削除する。以降フックは no-op になる（＝切断）。
 
 ```sh
-nvim --server $socket --remote +$line $filepath
+rm -f ~/.claude/nvim-sockets/$CLAUDE_CODE_SESSION_ID
 ```
 
-## 診断・デバッグ連携
+## 診断・デバッグ連携（任意）
+
+ソケットはこのセッションの状態ファイルから取得する。
+
+```sh
+socket=$(cat ~/.claude/nvim-sockets/$CLAUDE_CODE_SESSION_ID)
+```
 
 ### 診断情報の詳細取得
 
 ```sh
-nvim --server $socket --remote-expr "luaeval('vim.inspect(vim.diagnostic.get(0))')"
+nvim --server "$socket" --remote-expr "luaeval('vim.inspect(vim.diagnostic.get(0))')"
 ```
 
 ### 特定行へジャンプ（診断箇所への移動）
 
 ```sh
-nvim --server $socket --remote-send ':$line<CR>'
+nvim --server "$socket" --remote-send ':$line<CR>'
+```
+
+### コードをユーザーに表示（Read）
+
+`--remote` 以降の引数はすべてファイル名として解釈されるため、`file:line` や `+line` を混ぜず、
+ファイルを開いてから行ジャンプする。
+
+```sh
+nvim --server "$socket" --remote $filepath
+nvim --server "$socket" --remote-send ':$line<CR>'
 ```
