@@ -1,7 +1,8 @@
 ---
 name: nvim
-description: Use this skill to cooperate with neovim
+description: Use this skill to cooperate with Neovim. Connects Claude Code sessions to a running Neovim instance via --listen sockets, enabling automatic buffer sync, cursor tracking, and edit-location jumping. Use when the user mentions nvim, neovim, editor integration, or wants to see their edits reflected in their editor in real time.
 license: MIT
+compatibility: Designed for Claude Code (or similar products). Requires `jq` for JSON manipulation.
 ---
 
 # Neovim連携
