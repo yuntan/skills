@@ -30,4 +30,4 @@ When the change genuinely has no home in the existing specs, generate a structur
 
 ## Implementation
 
-Investigate the implementation to keep the spec accurate (find inconsistencies, verify feasibility), but do not propose implementation changes.
+Investigate the implementation to keep the spec accurate (find inconsistencies, verify feasibility), but do not propose implementation changes. Implementation happens separately: the user runs `/plan` to break the spec into tasks, then `/build` to implement them.
