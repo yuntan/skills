@@ -13,4 +13,4 @@ Read the existing spec (`spec/`) and the relevant codebase sections. Then:
 4. Write tasks with acceptance criteria and verification steps
 5. Add checkpoints between phases — each checkpoint lists only machine-checkable verifications (full test suite passes, build succeeds, e2e flow works) that `/build` can run and pass without human input
 
-Save (overwrite) the plan to `.tasks/plan.md` and task list to `.tasks/todo.md`.
+Save (overwrite) the plan to `.tasks/plan.md` and task list to `.tasks/todo.md`. Add `.tasks/` to `.gitignore` if it does not exist. Downstream commands (`/build`, etc.) expect these paths.
