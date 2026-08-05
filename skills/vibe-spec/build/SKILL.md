@@ -1,4 +1,5 @@
 ---
+name: build
 description: Implement tasks incrementally — build, test, verify, commit.
 disable-model-invocation: true
 ---
@@ -19,6 +20,7 @@ Switch to **Build mode** — the final phase of the Spec -> Plan -> Build workfl
    - a task is high-risk or irreversible — auth/permission changes, destructive data migrations, payments, deletions, deploys, anything touching secrets, **or anything you can't undo with `git revert`** → follow agent-skills:doubt-driven-development and get explicit sign-off before continuing
 
    After the user resolves a blocker, they re-invoke `/build` — it resumes from the next pending task.
+
 7. **Summarize at the end:** tasks completed, tests added, commits made, and anything skipped, flagged, or Suggestions left for the user.
 
 If any step fails, follow the `agent-skills:debugging-and-error-recovery` skill.
