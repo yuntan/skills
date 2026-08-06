@@ -1,7 +1,9 @@
 ---
-name: orwell-writing-system
-description: Use this skill when writing docs and PR text in English.
+name: rewrite-copy
+description: Use this skill when writing landing page copy in English.
 ---
+
+Rewrite this landing page copy under the six writing rules in `orwell-writing-system` skill. One concrete claim per line. Short words, active voice. Run the swap test on every line: if a competitor could paste it unchanged onto their page, rewrite it or delete it.
 
 # Orwell Writing System
 
@@ -14,6 +16,6 @@ Writing rules, from Orwell, 1946. These govern prose: docs, PR text, messages. N
 5. Never use a foreign phrase, a scientific word or a jargon word if you can think of an everyday English equivalent.
 6. Break any of these rules sooner than say anything outright barbarous.
 
-Rule 5 is not licence to flatten technical vocabulary. In technical writing the jargon is often the precise word, and the everyday substitute is vaguer: *latency*, *idempotent*, *vendored*, *cache*, *orchestration*. Keep the term when the swap would change what a reader does or believes. Rule 5 targets ornament, not precision.
+Rule 5 is not licence to flatten technical vocabulary. In technical writing the jargon is often the precise word, and the everyday substitute is vaguer: _latency_, _idempotent_, _vendored_, _cache_, _orchestration_. Keep the term when the swap would change what a reader does or believes. Rule 5 targets ornament, not precision.
 
 Review every prose output against these rules before delivering.
