@@ -14,4 +14,6 @@ Writing rules, from Orwell, 1946. These govern prose: docs, PR text, messages. N
 5. Never use a foreign phrase, a scientific word or a jargon word if you can think of an everyday English equivalent.
 6. Break any of these rules sooner than say anything outright barbarous.
 
+Rule 5 is not licence to flatten technical vocabulary. In technical writing the jargon is often the precise word, and the everyday substitute is vaguer: *latency*, *idempotent*, *vendored*, *cache*, *orchestration*. Keep the term when the swap would change what a reader does or believes. Rule 5 targets ornament, not precision.
+
 Review every prose output against these rules before delivering.
