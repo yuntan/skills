@@ -1,7 +1,8 @@
 ---
+name: nvim
 description: Connect this session to Neovim instance.
 argument-hint: tell what you want agent to see
-disable-model-invoke: true
+disable-model-invocation: true
 ---
 
 ## Connect to Neovim
